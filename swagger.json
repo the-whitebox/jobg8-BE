@@ -1,0 +1,397 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "My User Project CRUD",
+    "description": "My User Project Application API",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Users",
+      "description": "API for users in the system"
+    },
+    {
+      "name": "Jobs",
+      "description": "API for Jobs in the system"
+    }
+  ],
+
+  "paths": {
+    "/api/v1/users": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get all users in system",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Users"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/register": {
+      "post": {
+        "tags": ["Users"],
+        "description": "Create new user in system",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User that we want to create",
+            "schema": {
+              "$ref": "#/definitions/CreationUserRequest"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/CreationUserResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/login": {
+      "post": {
+        "tags": ["Users"],
+        "description": "Login user in system",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User that we want to login",
+            "schema": {
+              "$ref": "#/definitions/LoginUserRequest"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+
+    "/api/v1/users/{id}": {
+      "get": {
+        "tags": ["Users"],
+        "description": "ID of user that we want to find",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user that we want to find"
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "ID of user that we want to update"
+        }
+      ],
+      "put": {
+        "tags": ["Users"],
+        "description": "ID of user that we want to update",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User that we want to update",
+            "schema": {
+              "$ref": "#/definitions/CreationUserRequest"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+
+    "/api/v1/users/resetpassword": {
+      "post": {
+        "tags": ["Users"],
+        "description": "Email of the user we want to reset password",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "body",
+            "description": "Email of user that we want to reset password"
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/ResetPasswordResponse"
+            }
+          }
+        }
+      }
+    },
+
+    "/api/v1/jobs": {
+      "post": {
+        "parameters": [
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "pageSize of the jobs list"
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "description": "page no of the jobs list"
+          }
+        ],
+        "tags": ["Jobs"],
+        "summary": "Get all Jobs in system",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/JobsResponse"
+            }
+          }
+        }
+      }
+    },
+
+    "/api/v1/jobs/{id}": {
+      "post": {
+        "tags": ["Jobs"],
+        "description": "ID of Job that we want to find",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of Job that we want to find"
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Jobs"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "required": [],
+      "properties": {
+        "_id": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+
+        "street": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "LoginUserRequest": {
+      "required": ["email", "password"],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "CreationUserRequest": {
+      "required": ["email", "password"],
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+
+        "street": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        }
+      }
+    },
+    "CreationUserResponse": {
+      "required": [],
+      "properties": {
+        "id": {
+          "type": "string",
+          "uniqueItems": true
+        },
+
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "ResetPasswordResponse": {
+      "required": [],
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "Users": {
+      "type": "array",
+      "$ref": "#/definitions/User"
+    },
+    "JobsResponse": {
+      "required": [],
+      "properties": {
+        "JobList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Jobs"
+          }
+        },
+
+        "pageInfo": {
+          "type": "object",
+          "properties": {
+            "totalPages": {
+              "type": "number"
+            },
+            "totalRecord": {
+              "type": "number"
+            },
+            "pageSize": {
+              "type": "number"
+            },
+            "pageNumber": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "Jobs": {
+      "required": [],
+      "properties": {
+        "_id": {
+          "type": "string",
+          "uniqueItems": true
+        },
+
+        "AdvertiserName": { "type": "string" },
+        "AdvertiserType": { "type": "string" },
+        "SenderReference": { "type": "string" },
+        "DisplayReference": { "type": "string" },
+        "Classification": { "type": "string" },
+        "SubClassification": { "type": "string" },
+        "Position": { "type": "string" },
+        "Description": { "type": "string" },
+        "Country": { "type": "string" },
+        "Location": { "type": "string" },
+        "Area": { "type": "string" },
+        "PostalCode": { "type": "string" },
+        "ApplicationURL": { "type": "string" },
+        "Language": { "type": "string" },
+        "EmploymentType": { "type": "string" },
+        "StartDate": { "type": "string" },
+        "Duration": { "type": "string" },
+        "WorkHours": { "type": "string" },
+        "SalaryCurrency": { "type": "string" },
+        "SalaryMinimum": { "type": "string" },
+        "SalaryMaximum": { "type": "string" },
+        "SalaryPeriod": { "type": "string" },
+        "SalaryAdditional": { "type": "string" },
+        "AdditionalClassification1": { "type": "string" },
+        "AdditionalClassification2": { "type": "string" },
+        "AdditionalClassification3": { "type": "string" },
+        "AdditionalClassification4": { "type": "string" },
+        "LogoURL": { "type": "string" },
+        "JobType": { "type": "string" },
+        "SellPrice": { "type": "string" },
+        "RevenueType": { "type": "string" },
+
+        "id": { "type": "string" }
+      }
+    }
+  },
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"]
+}
