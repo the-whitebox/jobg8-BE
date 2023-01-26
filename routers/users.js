@@ -13,19 +13,9 @@ const logger = require("../helper/logger");
 
 router.post("/register", async (req, res) => {
   try {
-    let url = "Post /api/v1/users/register";
-    const id = crypto.randomBytes(16).toString("hex");
-    logger.log(id, url, "Started", Date.now());
     const oldUser = await User.findOne({ email: req.body.email });
 
     if (oldUser) {
-      logger.log(
-        id,
-        url,
-        "Ended",
-        Date.now(),
-        "User Already Exist. Please Login"
-      );
       return res
         .status(400)
         .json({ success: false, message: "User Already Exist. Please Login" });
@@ -33,13 +23,6 @@ router.post("/register", async (req, res) => {
     const { email, password } = req.body;
 
     if (!(email && password)) {
-      logger.log(
-        id,
-        url,
-        "Ended",
-        Date.now(),
-        "Email and Password is required !"
-      );
       return res
         .status(400)
         .json({ success: false, message: "Email and Password is required !" });
@@ -59,8 +42,6 @@ router.post("/register", async (req, res) => {
 
     let user1 = await user.save();
     if (!user1) {
-      logger.log(id, url, "Ended", Date.now(), "User cannot be Created !");
-
       return res
         .status(400)
         .json({ success: false, message: "User cannot be Created !" });
@@ -73,28 +54,16 @@ router.post("/register", async (req, res) => {
         expiresIn: "2h",
       }
     );
-    logger.log(id, url, "Ended", Date.now());
     return res.status(200).json({ id: user1.id, token: token });
   } catch (err) {
-    logger.log(id, url, "Error", Date.now(), err);
     return res.status(500).json({ success: false, error: err });
   }
 });
 
 router.post("/login", async (req, res) => {
   try {
-    const id = crypto.randomBytes(16).toString("hex");
-    let url = "Post /api/v1/users/login";
-    logger.log(id, url, "Started", Date.now());
     const { email, password } = req.body;
     if (!(email && password)) {
-      logger.log(
-        id,
-        url,
-        "Ended",
-        Date.now(),
-        "Email and Password is required !"
-      );
       return res
         .status(400)
         .json({ success: false, message: "Email and Password is required !" });
@@ -103,7 +72,6 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ email });
     const secret = process.env.secret;
     if (!user) {
-      logger.log(id, url, "Ended", Date.now(), "The user not found");
       return res
         .status(400)
         .json({ success: false, message: "The user not found" });
@@ -118,26 +86,19 @@ router.post("/login", async (req, res) => {
         secret,
         { expiresIn: "1d" }
       );
-      logger.log(id, url, "Ended", Date.now());
       return res.status(200).json({ user: user, token: token });
     } else {
-      logger.log(id, url, "Ended", Date.now(), "Password is wrong!");
       return res
         .status(400)
         .json({ success: false, message: "Password is wrong!" });
     }
   } catch (err) {
-    logger.log(id, url, "Error", Date.now(), err);
     return res.status(500).json({ success: false, error: err });
   }
 });
 
 router.get("/:id", auth, async (req, res) => {
   try {
-    const id = crypto.randomBytes(16).toString("hex");
-    let url = "Get /api/v1/users/:id";
-    logger.log(id, url, "Started", Date.now());
-
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res
         .status(400)
@@ -146,25 +107,19 @@ router.get("/:id", auth, async (req, res) => {
     const user = await User.findById(req.params.id).select("-passwordHash");
 
     if (!user) {
-      logger.log(id, url, "Ended", Date.now(), "The User not found !!!");
       return res.status(500).json({
         success: false,
         message: "The User not found !!!",
       });
     }
-    logger.log(id, url, "Ended", Date.now());
     return res.status(200).json(user);
   } catch (err) {
-    logger.log(id, url, "Error", Date.now(), err);
     return res.status(500).json({ success: false, error: err });
   }
 });
 
 router.put("/:id", auth, async (req, res) => {
   try {
-    const id = crypto.randomBytes(16).toString("hex");
-    let url = "Put /api/v1/users/:id";
-    logger.log(id, url, "Started", Date.now());
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(400).json({ success: false, message: "Wrong Id" });
     }
@@ -193,27 +148,21 @@ router.put("/:id", auth, async (req, res) => {
     );
 
     if (!user) {
-      logger.log(id, url, "Ended", Date.now(), "The User not Updated!");
       return res
         .status(400)
         .json({ success: false, message: "The User not Updated!" });
     }
-    logger.log(id, url, "Ended", Date.now());
+
     return res.status(200).json(user);
   } catch (err) {
-    logger.log(id, url, "Error", Date.now(), err);
     return res.status(500).json({ success: false, error: err });
   }
 });
 
 router.post("/resetpassword", async (req, res) => {
   try {
-    const id = crypto.randomBytes(16).toString("hex");
-    let url = "Post /api/v1/users/resetpassword";
-    logger.log(id, url, "Started", Date.now());
     const { email } = req.body;
     if (!email) {
-      logger.log(id, url, "Ended", Date.now(), "Email is required!");
       return res
         .status(400)
         .json({ success: false, message: "Email is required!" });
@@ -222,7 +171,6 @@ router.post("/resetpassword", async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      logger.log(id, url, "Ended", Date.now(), "Invalid User");
       return res.status(400).json({ success: false, message: "Invalid User" });
     }
 
@@ -238,7 +186,6 @@ router.post("/resetpassword", async (req, res) => {
     ).select("-passwordHash");
 
     if (!updatedUser) {
-      logger.log(id, url, "Ended", Date.now(), "Password not updated!");
       return res
         .status(400)
         .json({ success: false, message: "Password is not updated!" });
@@ -249,33 +196,25 @@ router.post("/resetpassword", async (req, res) => {
         "Password reset",
         newPassword
       );
-      logger.log(id, url, "Ended", Date.now());
       return res
         .status(200)
         .json({ success: true, message: "Email has been sent" });
     }
   } catch (err) {
-    logger.log(id, url, "Error", Date.now(), err);
     return res.status(500).json({ success: false, error: err });
   }
 });
 
 router.get(`/`, auth, async (req, res) => {
   try {
-    const id = crypto.randomBytes(16).toString("hex");
-    let url = "Get /api/v1/users";
-    logger.log(id, url, "Started", Date.now());
     const userList = await User.find().select("-passwordHash");
 
     if (!userList) {
-      logger.log(id, url, "Ended", Date.now(), "No User Found");
       return res.status(500).json({ success: false, message: "No User Found" });
     } else {
-      logger.log(id, url, "Ended", Date.now());
       return res.status(200).json(userList);
     }
   } catch (err) {
-    logger.log(id, url, "Error", Date.now(), err);
     return res.status(500).json({ success: false, error: err });
   }
 });

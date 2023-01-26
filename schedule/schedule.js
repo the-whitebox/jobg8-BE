@@ -52,62 +52,62 @@ const testJobsSavingActivity = () => {
   }
 };
 module.exports = () => {
-  cron.schedule("0 */5 * * * *", () => {
-    console.log("started");
-    testJobsSavingActivity();
+  cron.schedule("0 0 */4 * * *", () => {
+    //console.log("started");
+    //testJobsSavingActivity();
 
-    // const id = crypto.randomBytes(16).toString("hex");
-    // const jobDir = process.env.Jobg8File;
-    // const fileUrl = process.env.JOBG8URL;
-    // if (!fs.existsSync(jobDir)) {
-    //   fs.mkdirSync(jobDir, { recursive: true });
-    // }
-    // let zipPath = jobDir + "/jobs.zip";
-    // logger.log(id, "Cron_Job", "Started", Date.now());
-    // let isZipFileReceived = false;
-    // try {
-    //   axios
-    //     .get(fileUrl, {
-    //       headers: {
-    //         Accept: "application/zip",
-    //       },
-    //       responseType: "arraybuffer",
-    //     })
-    //     .then((response) => {
-    //       if (response.headers["content-type"] === `application/zip`) {
-    //         logger.log(id, "Zip Download", "Started", Date.now());
-    //         return new Promise(function (resolve, reject) {
-    //           fs.writeFile(zipPath, response.data, (err) => {
-    //             if (err) {
-    //               reject(err);
-    //             } else {
-    //               isZipFileReceived = true;
-    //               logger.log(id, "Zip Download", "Ended", Date.now());
-    //               resolve(response.data);
-    //             }
-    //           });
-    //         });
-    //       } else if (
-    //         response.headers["content-type"] === `text/html; charset=utf-8`
-    //       ) {
-    //         isZipFileReceived = false;
-    //       }
-    //     })
-    //     .then((response) => {
-    //       if (isZipFileReceived) {
-    //         if (util.checkZipFileExists()) {
-    //           util.extractZipFile(id);
-    //           if (util.checkXmlFileExists()) {
-    //             saveJobs(util.convertToJson(), id);
-    //           }
-    //         }
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       logger.log(id, "Cron_Job", "Error", Date.now(), err.message);
-    //     });
-    // } catch (err) {
-    //   logger.log(id, "Cron_Job", "Error", Date.now(), err.message.toString());
-    // }
+    const id = crypto.randomBytes(16).toString("hex");
+    const jobDir = process.env.Jobg8File;
+    const fileUrl = process.env.JOBG8URL;
+    if (!fs.existsSync(jobDir)) {
+      fs.mkdirSync(jobDir, { recursive: true });
+    }
+    let zipPath = jobDir + "/jobs.zip";
+    logger.log(id, "Cron_Job", "Started", Date.now());
+    let isZipFileReceived = false;
+    try {
+      axios
+        .get(fileUrl, {
+          headers: {
+            Accept: "application/zip",
+          },
+          responseType: "arraybuffer",
+        })
+        .then((response) => {
+          if (response.headers["content-type"] === `application/zip`) {
+            logger.log(id, "Zip Download", "Started", Date.now());
+            return new Promise(function (resolve, reject) {
+              fs.writeFile(zipPath, response.data, (err) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  isZipFileReceived = true;
+                  logger.log(id, "Zip Download", "Ended", Date.now());
+                  resolve(response.data);
+                }
+              });
+            });
+          } else if (
+            response.headers["content-type"] === `text/html; charset=utf-8`
+          ) {
+            isZipFileReceived = false;
+          }
+        })
+        .then((response) => {
+          if (isZipFileReceived) {
+            if (util.checkZipFileExists()) {
+              util.extractZipFile(id);
+              if (util.checkXmlFileExists()) {
+                saveJobs(util.convertToJson(), id);
+              }
+            }
+          }
+        })
+        .catch((err) => {
+          logger.log(id, "Cron_Job", "Error", Date.now(), err.message);
+        });
+    } catch (err) {
+      logger.log(id, "Cron_Job", "Error", Date.now(), err.message.toString());
+    }
   });
 };

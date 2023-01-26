@@ -19,12 +19,9 @@ app.use(morgan("tiny"));
 
 app.use((req, res, next) => {
   const start = Date.now();
-  console.log(`${req.method} ${req.url}`);
   next();
   // response actions goes here
   const delta = Date.now() - start;
-
-  console.log(`${delta}ms is the time difference`);
 });
 
 //Routes
@@ -46,6 +43,6 @@ mongoose
     throw err;
   });
 
-app.listen(3000, () => {
-  console.log("Server is listening at 3000");
+app.listen(process.env.PORT, () => {
+  console.log(`Server is listening at ${process.env.PORT}`);
 });
